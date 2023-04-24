@@ -18,106 +18,55 @@ val productList = mapOf(
 fun main() {
     var isDoneTakingOrder = false
 
-    display()
+    displayMenu()
 
     while (!isDoneTakingOrder) {
 
-
         print("Enter your order: ")
-
-        val myOrder = readLine()?.toInt()
-        when (myOrder) {
-            1 -> {
-                order(165)
-                if (orders.containsKey("Caffe Americano")) {
-                    val currentValue = orders["Caffe Americano"]
-                    if (currentValue != null) {
-                        orders["Caffe Americano"] = currentValue + 1
-                    } else {
-                        print("error in taking orders")
-                    }
-                } else {
-                    orders["Caffe Americano"] = 1
+        try{
+            when (readLine()?.toInt()) {
+                1 -> {
+                    processOrder(165)
+                    orderTracker("Caffe Americano")
                 }
-            }
 
-            2 -> {
-                order(160)
-                if (orders.containsKey("Caffe Latte")) {
-                    val currentValue = orders["Caffe Latte"]
-                    if (currentValue != null) {
-                        orders["Caffe Latte"] = currentValue + 1
-                    } else {
-                        print("error in taking orders")
-                    }
-                } else {
-                    orders["Caffe Latte"] = 1
+                2 -> {
+                    processOrder(160)
+                    orderTracker("Caffe Latte")
                 }
-            }
 
-            3 -> {
-                order(160)
-                if (orders.containsKey("Cappuccino")) {
-                    val currentValue = orders["Cappuccino"]
-                    if (currentValue != null) {
-                        orders["Cappuccino"] = currentValue + 1
-                    } else {
-                        print("error in taking orders")
-                    }
-                } else {
-                    orders["Cappuccino"] = 1
+                3 -> {
+                    processOrder(160)
+                    orderTracker("Cappuccino")
                 }
-            }
 
-            4 -> {
-                order(170)
-                if (orders.containsKey("Caramel Macchiato")) {
-                    val currentValue = orders["Caramel Macchiato"]
-                    if (currentValue != null) {
-                        orders["Caramel Macchiato"] = currentValue + 1
-                    } else {
-                        print("error in taking orders")
-                    }
-                } else {
-                    orders["Caramel Macchiato"] = 1
+                4 -> {
+                    processOrder(170)
+                    orderTracker("Caramel Macchiatto")
                 }
-            }
 
-            0 -> {
-                println("\n\nYour order has been confirmed thank you for Ordering at KotlinBasics Cafe")
-                println(
-                    "---------- Receipt ----------\n" +
-                            "Your Orders:"
-                )
-                for ((coffee, count) in orders) {
-                    for ((coffe2, price) in productList) {
-                        if (coffee == coffe2) {
-                            val totalPrice = count * price
-                            println("$coffee(x$count) - ₱$totalPrice")
-                        }
-                    }
+                0 -> {
+                    receiptPrinter()
+                    generateReport()
+                    isDoneTakingOrder = true
                 }
-                println(
-                    "Total:           ₱$totalSales\n" +
-                            "-----------------------------"
-                )
-                generateReport()
-                isDoneTakingOrder = true
-            }
 
-            else -> println("Please input an existing number in our menu")
+                else -> println("Please input an existing number in our menu")
+            }
+        }catch(e: NumberFormatException){
+            println("Please input numbers that are only shown in the menu")
         }
     }
 }
 
 //
-fun order(cost: Int) {
+fun processOrder(cost: Int) {
     totalSales += cost
     totalOrders++
     averageSalePerOrder = totalSales / totalOrders
 }
 
-fun display() {
+fun displayMenu() {
     println("------ Kotlin Basics ------")
     println("Coffee Menu:")
     println("1 - Caffe Americano: ₱165\n2 - Caffe Latte: ₱160\n3 - Cappuccino: ₱160\n4 - Caramel Macchiato: ₱170 \n0 - Process Order")
@@ -131,8 +80,38 @@ fun generateReport() {
     println("Total Orders: #$totalOrders")
     println("Average Sale Per Order: ₱$averageSalePerOrder")
 }
+fun orderTracker(coffee: String){
+    if (orders.containsKey(coffee)) {
+        val currentValue = orders[coffee]
+        if (currentValue != null) {
+            orders[coffee] = currentValue + 1
+        } else {
+            print("error in taking orders")
+        }
+    } else {
+        orders[coffee] = 1
+    }
+}
 
-
+fun receiptPrinter(){
+    println("\n\nYour order has been confirmed thank you for Ordering at KotlinBasics Cafe")
+    println(
+        "---------- Receipt ----------\n" +
+                "Your Orders:"
+    )
+    for ((coffee, count) in orders) {
+        for ((coffee2, price) in productList) {
+            if (coffee == coffee2) {
+                val totalPrice = count * price
+                println("$coffee(x$count) - ₱$totalPrice")
+            }
+        }
+    }
+    println(
+        "Total:           ₱$totalSales\n" +
+                "-----------------------------"
+    )
+}
 
 
 
